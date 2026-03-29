@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Day 2 — Using AI Prompts to Build Websites That Don't Look AI-Made</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#faf9f7;--ink:#1c1917;--muted:#78716c;--rule:#e7e5e4;--green:#159957;--navy:#155799;--hi:#fef9c3;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--ink);font-family:'Lora',Georgia,serif;font-size:19px;line-height:1.9;}
+
+    .site-header{background:linear-gradient(135deg,#155799 0%,#159957 100%);padding:2.8rem 2rem 2.4rem;text-align:center;}
+    .breadcrumb{font-family:'Inter',sans-serif;font-size:.78rem;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:1rem;}
+    .breadcrumb a{color:rgba(255,255,255,.85);text-decoration:none;}
+    .breadcrumb a:hover{color:white;}
+    .site-header h1{font-family:'Lora',serif;font-size:clamp(1.4rem,3.5vw,2rem);font-weight:600;color:#fff;max-width:640px;margin:0 auto .7rem;line-height:1.3;}
+    .site-header .meta{font-family:'Inter',sans-serif;font-size:.8rem;color:rgba(255,255,255,.65);}
+
+    article{max-width:660px;margin:0 auto;padding:3rem 1.5rem 5rem;}
+    p{margin-bottom:1.3rem;color:#292524;}
+    h2{font-family:'Lora',serif;font-size:1.4rem;font-weight:600;color:var(--ink);margin:2.8rem 0 .7rem;padding-bottom:.4rem;border-bottom:1.5px solid var(--rule);}
+    h3{font-family:'Inter',sans-serif;font-size:.88rem;font-weight:500;color:#78716c;margin:1.8rem 0 .5rem;text-transform:uppercase;letter-spacing:.07em;}
+    mark{background:var(--hi);padding:1px 3px;border-radius:3px;font-style:normal;}
+    blockquote{border-left:3px solid #d4b483;padding:.6rem 0 .6rem 1.1rem;margin:1.8rem 0;font-style:italic;color:#57534e;font-size:1.05rem;line-height:1.7;}
+    a{color:var(--navy);}
+    strong{font-weight:600;}
+
+    code{font-family:'JetBrains Mono',monospace;font-size:.78em;background:#f5f4f2;border:1px solid #e7e5e4;padding:1px 5px;border-radius:4px;color:#7c3aed;}
+    pre{font-family:'JetBrains Mono',monospace;font-size:.79rem;background:#1c1917;color:#d6d3d1;border-radius:8px;padding:1.2rem 1.4rem;margin:1rem 0 1.6rem;overflow-x:auto;white-space:pre-wrap;line-height:1.7;}
+    pre .c{color:#78716c;}
+    pre .g{color:#86efac;}
+    pre .r{color:#fca5a5;}
+    pre .y{color:#fde68a;}
+
+    .ref-box{background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;padding:12px 16px;font-family:'Inter',sans-serif;font-size:.87rem;color:#065f46;margin-bottom:2.2rem;}
+    .ref-box a{color:#155799;font-weight:500;}
+
+    .note{background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;border-radius:0 6px 6px 0;font-family:'Inter',sans-serif;font-size:.87rem;color:#78350f;margin:1.2rem 0 1.6rem;line-height:1.65;}
+
+    .proof-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px 18px;margin:1.4rem 0 1.8rem;font-family:'Inter',sans-serif;font-size:.88rem;color:#14532d;line-height:1.65;}
+    .proof-box .proof-label{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#15803d;margin-bottom:8px;}
+    .proof-box ul{padding-left:1.2rem;}
+    .proof-box li{margin-bottom:4px;}
+
+    .side-by-side{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:1.2rem 0 1.8rem;}
+    @media(max-width:500px){.side-by-side{grid-template-columns:1fr;}}
+    .sbs-box{border-radius:7px;padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.6;}
+    .sbs-bad{background:#fff1f2;border:1px solid #fecdd3;color:#9f1239;}
+    .sbs-good{background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d;}
+    .sbs-label{font-family:'Inter',sans-serif;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;display:block;}
+    .sbs-bad .sbs-label{color:#be123c;}
+    .sbs-good .sbs-label{color:#15803d;}
+
+    .asset-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:1rem 0 1.4rem;}
+    .asset-card{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:12px 14px;}
+    .asset-card .icon{font-size:1.2rem;margin-bottom:6px;display:block;}
+    .asset-card strong{font-family:'Inter',sans-serif;font-size:.85rem;font-weight:500;display:block;margin-bottom:3px;}
+    .asset-card span{font-family:'Inter',sans-serif;font-size:.76rem;color:var(--muted);line-height:1.4;}
+
+    .fail-list{counter-reset:fail;}
+    .fail-item{display:flex;gap:14px;margin-bottom:1.1rem;align-items:flex-start;}
+    .fail-num{font-family:'Inter',sans-serif;font-size:.78rem;font-weight:600;color:#fff;background:#dc2626;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:4px;}
+    .fail-body{font-size:.93rem;color:#292524;}
+    .fail-body strong{font-family:'Inter',sans-serif;font-size:.88rem;display:block;margin-bottom:2px;}
+
+    .tool-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:1rem 0 1.8rem;}
+    .tool-card{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:12px 14px;}
+    .tool-card strong{font-family:'Inter',sans-serif;font-size:.88rem;font-weight:500;display:block;margin-bottom:3px;}
+    .tool-card span{font-family:'Inter',sans-serif;font-size:.78rem;color:var(--muted);line-height:1.5;}
+
+    hr{border:none;border-top:1px solid var(--rule);margin:2.5rem 0;}
+
+    footer{text-align:center;font-family:'Inter',sans-serif;font-size:.8rem;color:var(--muted);border-top:1px solid var(--rule);padding:1.5rem;}
+    footer a{color:var(--navy);text-decoration:none;}
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <p class="breadcrumb"><a href="index.html">← AI Learning Blog</a> / Day 2</p>
+  <h1>Using AI Prompts to Build Websites That Don't Look AI-Made</h1>
+  <p class="meta">Day 2 &nbsp;·&nbsp; March 29, 2026</p>
+</header>
+
+<article>
+
+  <div class="ref-box">
+    🔗 Today's reference: <a href="https://motionsites.ai" target="_blank">MotionSites.ai</a> — a library of premium prompts for generating animated website hero sections. Think of it as a prompt recipe book built specifically for web design.
+  </div>
+
+  <p>
+    Okay so I'll be honest — when I first heard "use AI to generate a website," I rolled my eyes a little.
+    Because you know what AI-generated websites look like. Dark background. Purple gradient.
+    Roboto font. A floating card with a fake dashboard screenshot. Every. Single. Time.
+  </p>
+  <p>
+    But then I came across <a href="https://motionsites.ai" target="_blank">MotionSites.ai</a> and
+    the examples there were... actually good? Like, genuinely good. The kind of good where you'd assume
+    a designer spent two days on it. So I started digging into <em>why</em> — and it all comes down
+    to the prompt.
+  </p>
+
+  <h2>What MotionSites Actually Is</h2>
+
+  <p>
+    MotionSites isn't a website builder. No editor, no drag and drop, no templates to fill in.
+    It's purely a <strong>library of prompts</strong> — each one crafted to produce a specific type
+    of animated website hero section when you paste it into an AI tool like Claude, Bolt, or v0.
+  </p>
+  <p>
+    The <strong>hero section</strong> is the very top of a webpage — the big headline, the one-liner
+    below it, and the "Get Started" button. Visitors decide in about 3 seconds whether to scroll or
+    close the tab. MotionSites exists entirely to make that 3-second window count.
+  </p>
+
+  <blockquote>
+    The prompts aren't just descriptions. They're full design specifications — colors, fonts,
+    animations, spacing, and what to avoid — all written before a single line of code is generated.
+  </blockquote>
+
+  <p>
+    The site organizes prompts by category — Agency, SaaS, Portfolio, Fintech, Web3, Landing Page.
+    Each has a live animated preview and a ready-to-copy prompt. Paste it into your AI tool, get
+    working HTML/CSS back. That's the whole workflow.
+  </p>
+
+  <h2>Why "Just Describe It" Doesn't Work</h2>
+
+  <p>
+    The AI gives you the most statistically average result it can, based on millions of websites
+    it has seen. And the average website is forgettable.
+  </p>
+  <p>
+    Ask for a cybersecurity site — dark mode, terminal green text, hacker in a hoodie.
+    Ask for a portfolio — dark background, neon accent, a project card grid identical to 40,000 others.
+    This isn't the AI being lazy. It's just doing what averages do.
+  </p>
+  <p>
+    <mark>The solution isn't a better AI — it's a better prompt.</mark> Specifically, one that defines
+    the design system upfront and explicitly bans the clichés the AI would otherwise reach for.
+  </p>
+
+  <div class="side-by-side">
+    <div class="sbs-box sbs-bad">
+      <span class="sbs-label">❌ What most people write</span>
+      Make me a website for a cybersecurity company. Dark theme, looks professional.
+    </div>
+    <div class="sbs-box sbs-good">
+      <span class="sbs-label">✅ What actually works</span>
+      --bg:#0B1120 --accent:#0ECEAA. Font: DM Sans 700. Blurred teal orb drifts in bg. Text fades up on load. NEGATIVE PROMPT: no terminal green, no glitch effects, no hoodies.
+    </div>
+  </div>
+
+  <h2>The Full Prompt Structure</h2>
+
+  <p>
+    After going through a lot of MotionSites examples, they all follow the same order.
+    And the order matters — each layer builds on the one before it:
+  </p>
+
+<pre><span class="c"># 1. Design system first — always</span>
+<span class="g">CSS variables for every color. Font names. Not "dark blue" — #0B1120.
+Not "modern font" — DM Sans, weight 700.</span>
+
+<span class="c"># 2. Layout and content</span>
+<span class="g">What sections exist. Exact words for headlines and subtext.
+Not "standard layout" — "centered, headline above subtext above two buttons."</span>
+
+<span class="c"># 3. Real assets (the piece most people skip)</span>
+<span class="y">Do you have a video, a Spline 3D scene, a Lottie file, real images?
+Reference them here. The AI will wire them in correctly.</span>
+
+<span class="c"># 4. Animation behaviour</span>
+<span class="g">Describe it plainly. "Slow floating blurred orb" or
+"underline draws in left to right." Not just "make it animated."</span>
+
+<span class="c"># 5. Negative prompt</span>
+<span class="r">Everything the AI must NOT produce.
+This is where most prompts fall short — more on this next.</span></pre>
+
+  <h2>Negative Prompting — The Proper Term</h2>
+
+  <p>
+    We've been calling it "anti-rules" but it has a real technical name: <strong>negative prompting</strong>.
+  </p>
+  <p>
+    The term comes from image generation models like Stable Diffusion and Midjourney, where you pass
+    a dedicated field of things you <em>don't</em> want in the output —
+    <code>blurry, low quality, extra fingers, watermark</code> — and the model actively steers away
+    from them during generation. The exact same principle carries over to AI web design prompts.
+  </p>
+  <p>
+    Without a negative prompt, the AI fills every gap with its defaults. And its defaults for
+    tech/security sites are almost always:
+  </p>
+  <ul style="padding-left:1.4rem;margin-bottom:1.3rem;color:#292524;font-size:.95rem;line-height:2;">
+    <li>Terminal green <code>#00FF00</code> text</li>
+    <li>Glitch / scanline effects</li>
+    <li>Matrix-style rain animation</li>
+    <li>Stock photos of hooded figures</li>
+    <li>Generic Inter or Roboto fonts</li>
+    <li>Purple gradient on white background</li>
+  </ul>
+  <p>A properly written negative prompt looks like this:</p>
+
+<pre><span class="r">NEGATIVE PROMPT:
+Do not use terminal green (#00FF00), glitch effects, scanline overlays,
+Matrix rain animations, stock photos of hooded figures, aggressive neon
+colors, generic sans-serif fallbacks, or dark grunge textures.
+Awwwards-level quality only — nothing that looks like a free template.</span></pre>
+
+  <div class="note">
+    💡 Think of it less as a rule and more as <em>taste in writing</em> — you're telling the AI which
+    aesthetic neighbourhood you refuse to live in. The more specific you are here, the less generic the output.
+  </div>
+
+  <h2>Including Real Assets in Your Prompt</h2>
+
+  <p>
+    This is the piece most tutorials leave out entirely, and it's a big reason results feel flat.
+    When you give AI a prompt with no actual assets — no images, no video, no 3D — it fills
+    everything with placeholders. Grey boxes. Gradient blobs pretending to be visuals.
+    The result looks like a mockup, not a real site.
+  </p>
+  <p>
+    The fix: <strong>bring your own assets and reference them directly in the prompt.</strong>
+  </p>
+
+  <div class="asset-grid">
+    <div class="asset-card"><span class="icon">🎬</span><strong>Hero Video</strong><span>Free looping clips from Mixkit or Coverr — paste the URL directly</span></div>
+    <div class="asset-card"><span class="icon">🎭</span><strong>Spline 3D</strong><span>Free 3D scenes from spline.design — use the embed/publish URL</span></div>
+    <div class="asset-card"><span class="icon">✨</span><strong>Lottie</strong><span>JSON animations from LottieFiles — reference the CDN link</span></div>
+    <div class="asset-card"><span class="icon">🖼️</span><strong>Your Images</strong><span>Screenshots, product shots, photography — describe placement too</span></div>
+  </div>
+
+  <h3>🎬 Hero background video</h3>
+<pre>Background: full-screen looping video, muted, autoplay, no controls.
+<span class="g">Video source: https://assets.mixkit.co/videos/preview/mixkit-server-room-1498-large.mp4</span>
+Dark navy overlay at 70% opacity on top so text stays readable.</pre>
+
+  <h3>🎭 Spline 3D scene</h3>
+<pre>Background: embed this Spline scene as a full-screen canvas behind all text.
+<span class="g">Spline URL: https://prod.spline.design/your-scene-id/scene.splinecode</span>
+pointer-events: none so it doesn't block clicks.</pre>
+
+  <h3>✨ Lottie animation</h3>
+<pre>Hero illustration (right side of layout): render this Lottie animation.
+<span class="g">URL: https://assets10.lottiefiles.com/packages/lf20_yourfile.json</span>
+Use lottie-player web component. Width 400px. Loop. Autoplay.</pre>
+
+  <h3>🖼️ Your own image</h3>
+<pre>Hero image: /assets/dashboard-preview.png
+Right side, slight tilt at -3deg, border-radius 12px,
+<span class="g">drop-shadow: 0 20px 60px rgba(0,0,0,0.4)</span></pre>
+
+  <p>
+    When you include real assets, the AI stops guessing and starts building around something concrete.
+    The jump in quality is immediately noticeable — even one real image makes a site feel
+    finished rather than generated.
+  </p>
+
+  <h2>Case Study — CipherShield (Ethical Hacking Community)</h2>
+
+  <p>
+    The task: a landing page for a professional ethical hacking community offering pen testing,
+    red team operations, and compliance audits. The constraint — no hoodie aesthetic, no glitch,
+    no Matrix rain. These are real professionals and the site needs to say that.
+  </p>
+  <p>
+    Design direction: McKinsey for cybersecurity. Deep navy, electric teal accent
+    (same palette as Stripe and Linear), DM Sans headings, one slow blurred orb
+    in the background and nothing else moving.
+  </p>
+
+<pre><span class="c">Build a full-screen HTML/CSS landing hero for "CipherShield" —
+a professional ethical hacking and pen testing community.</span>
+
+<span class="g">Design system:</span>
+--bg: #0B1120   --text: #F5F7FA   --accent: #0ECEAA
+Font: DM Sans (Google Fonts), headline 62px weight 700, tracking -0.02em
+
+<span class="g">Hero content:</span>
+Headline:    "We Break In So Others Can't"
+Subtext:     "Certified penetration testing and red team operations
+              for enterprises that can't afford to be wrong."
+Primary CTA: "Book a Free Scoping Call"
+Ghost CTA:   "View Case Studies"
+Trust line:  "200+ Clients Protected  ·  14,000+ Vulnerabilities Found"
+
+<span class="g">Animation:</span>
+- Blurred teal ellipse (400x300px, 20% opacity) drifts slowly on a 20s CSS loop
+- Hero text staggered fade-up: headline 0ms, subtext 120ms, CTAs 240ms
+- Primary button: teal glow on hover + scale(1.02)
+
+<span class="r">NEGATIVE PROMPT:
+Do not use terminal green (#00FF00), glitch/scanline effects,
+Matrix rain, stock photos of hoodies, dark grunge textures,
+aggressive neon. Output clean HTML + CSS, no JS frameworks.</span></pre>
+
+  <div class="proof-box">
+    <div class="proof-label">✅ Real output — tested on Bolt.new</div>
+    We ran this exact prompt on Bolt.new. Here's what came back on the first attempt:
+    <ul>
+      <li>Dark navy background with the exact color values specified</li>
+      <li>"We Break In So Others Can't" in DM Sans, correct size and weight</li>
+      <li>Teal CTA buttons with glow on hover, ghost variant working correctly</li>
+      <li>Staggered text fade-up animations on all elements</li>
+      <li>Trust line rendered below the buttons</li>
+      <li>Zero glitch effects, zero terminal green, zero hoodies</li>
+    </ul>
+    <br>The negative prompt worked exactly as intended.
+  </div>
+
+  <h2>Why Your Prompt Might Not Have Worked</h2>
+
+  <p>
+    If you tried a prompt and the result didn't look right, here are the honest reasons why —
+    not vague advice, but the actual failure modes:
+  </p>
+
+  <div class="fail-list">
+    <div class="fail-item">
+      <div class="fail-num">1</div>
+      <div class="fail-body">
+        <strong>You didn't write a negative prompt</strong>
+        This is the single most common reason outputs look generic. Even one line like
+        <code>"no terminal green, no glitch effects"</code> makes a measurable difference.
+        Without it, the AI defaults to whatever pattern it knows best for that category.
+      </div>
+    </div>
+    <div class="fail-item">
+      <div class="fail-num">2</div>
+      <div class="fail-body">
+        <strong>The prompt was too short</strong>
+        Vague prompts produce vague output. If your prompt was under 80 words, the AI had
+        too many gaps to fill in on its own — and filled them with defaults. Specificity is the whole point.
+      </div>
+    </div>
+    <div class="fail-item">
+      <div class="fail-num">3</div>
+      <div class="fail-body">
+        <strong>No real assets</strong>
+        CSS gradient blobs and placeholder boxes will always make a site feel unfinished,
+        no matter how good the layout is. Even one real image or a short looping video
+        changes the perception completely.
+      </div>
+    </div>
+    <div class="fail-item">
+      <div class="fail-num">4</div>
+      <div class="fail-body">
+        <strong>The font didn't load</strong>
+        If you specified a Google Font and the tool didn't add the import link,
+        the browser falls back to a system font and the whole feel of the site shifts.
+        Always check the <code>&lt;head&gt;</code> of the generated code to confirm the
+        <code>&lt;link&gt;</code> tag is there.
+      </div>
+    </div>
+    <div class="fail-item">
+      <div class="fail-num">5</div>
+      <div class="fail-body">
+        <strong>Wrong tool for the prompt</strong>
+        Different tools follow instructions differently. Bolt.new and Claude tend to
+        follow precise design specs closely. Some other tools are more "creative" with
+        your instructions — meaning they quietly ignore parts they find inconvenient.
+        If the output looks off, try the same prompt in a different tool before editing the prompt itself.
+      </div>
+    </div>
+  </div>
+
+  <blockquote>
+    AI doesn't produce bad websites because it's bad at design. It produces bad websites
+    because most people give it bad prompts. Specify the hex codes. Name the fonts.
+    Reference real assets. Write the negative prompt. That's genuinely the whole secret.
+  </blockquote>
+
+  <h2>Where to Paste These Prompts</h2>
+
+  <div class="tool-row">
+    <div class="tool-card"><strong>Bolt.new</strong><span>Full working page in one shot — best starting point</span></div>
+    <div class="tool-card"><strong>v0.dev</strong><span>React + Tailwind, made by Vercel</span></div>
+    <div class="tool-card"><strong>Lovable</strong><span>MotionSites specifically recommends this one</span></div>
+    <div class="tool-card"><strong>Claude</strong><span>Best for precise HTML/CSS with exact control</span></div>
+    <div class="tool-card"><strong>Replit</strong><span>Good for video backgrounds and scroll effects</span></div>
+    <div class="tool-card"><strong>Framer</strong><span>Edit visually after generating</span></div>
+  </div>
+
+</article>
+
+<footer>
+  <a href="index.html">← Back to All Posts</a> &nbsp;·&nbsp; AI Learning Blog
+</footer>
+
+</body>
+</html>
