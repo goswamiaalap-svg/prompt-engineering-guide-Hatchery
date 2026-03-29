@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Learning Blog — Hatchery 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#faf9f7;--ink:#1c1917;--muted:#78716c;--rule:#e7e5e4;--green:#159957;--navy:#155799;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-size:16px;line-height:1.7;}
+
+    /* Header */
+    .site-header{
+      background:linear-gradient(135deg,#155799 0%,#159957 100%);
+      padding:3.5rem 2rem 3rem;
+      text-align:center;
+    }
+    .site-header h1{
+      font-family:'Lora',serif;
+      font-size:clamp(1.8rem,4vw,2.6rem);
+      font-weight:600;
+      color:#fff;
+      margin-bottom:.6rem;
+    }
+    .site-header p{
+      font-size:.95rem;
+      color:rgba(255,255,255,.75);
+      max-width:520px;
+      margin:0 auto;
+    }
+
+    /* Main container */
+    main{max-width:680px;margin:0 auto;padding:3rem 1.5rem 5rem;}
+
+    /* Section label */
+    .section-label{
+      font-size:.72rem;
+      font-weight:600;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:1.25rem;
+    }
+
+    /* Day cards */
+    .posts{display:flex;flex-direction:column;gap:.75rem;}
+
+    .post-card{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:1rem;
+      background:#fff;
+      border:1px solid var(--rule);
+      border-radius:10px;
+      padding:1.1rem 1.4rem;
+      text-decoration:none;
+      color:var(--ink);
+      transition:border-color .2s, box-shadow .2s, transform .15s;
+    }
+    .post-card:hover{
+      border-color:#159957;
+      box-shadow:0 4px 18px rgba(21,153,87,.1);
+      transform:translateY(-1px);
+    }
+
+    .post-left{display:flex;align-items:center;gap:1rem;}
+
+    .day-badge{
+      flex-shrink:0;
+      width:44px;height:44px;
+      background:linear-gradient(135deg,#155799,#159957);
+      border-radius:8px;
+      display:flex;align-items:center;justify-content:center;
+      font-family:'Lora',serif;
+      font-size:.8rem;
+      font-weight:600;
+      color:#fff;
+      line-height:1.2;
+      text-align:center;
+    }
+
+    .post-info{}
+    .post-title{
+      font-family:'Lora',serif;
+      font-size:1rem;
+      font-weight:600;
+      color:var(--ink);
+      margin-bottom:.18rem;
+      line-height:1.35;
+    }
+    .post-meta{
+      font-size:.78rem;
+      color:var(--muted);
+    }
+
+    .post-arrow{
+      flex-shrink:0;
+      font-size:1.1rem;
+      color:#ccc;
+      transition:color .2s, transform .2s;
+    }
+    .post-card:hover .post-arrow{color:#159957;transform:translateX(3px);}
+
+    /* Coming soon cards */
+    .post-card.soon{
+      opacity:.5;
+      cursor:default;
+      pointer-events:none;
+    }
+    .post-card.soon:hover{transform:none;box-shadow:none;border-color:var(--rule);}
+    .soon-tag{
+      font-size:.7rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      color:#aaa;
+      background:#f5f4f2;
+      border-radius:4px;
+      padding:2px 7px;
+      flex-shrink:0;
+    }
+
+    footer{
+      text-align:center;
+      font-size:.8rem;
+      color:var(--muted);
+      border-top:1px solid var(--rule);
+      padding:1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>AI Learning Blog</h1>
+  <p>A day-by-day guide through AI tools, prompting techniques, and building real things — Hatchery 2026.</p>
+</header>
+
+<main>
+  <p class="section-label">All Posts</p>
+
+  <div class="posts">
+
+    <!-- Day 1 — published -->
+    <a href="day 1.html" class="post-card">
+      <div class="post-left">
+        <div class="day-badge">Day<br/>01</div>
+        <div class="post-info">
+          <div class="post-title">Prompt Engineering — A Complete Guide</div>
+          <div class="post-meta">March 27, 2026 &nbsp;·&nbsp; Prompting Fundamentals</div>
+        </div>
+      </div>
+      <span class="post-arrow">→</span>
+    </a>
+
+    <!-- Day 2 — published -->
+    <a href="day2.html" class="post-card">
+      <div class="post-left">
+        <div class="day-badge">Day<br/>02</div>
+        <div class="post-info">
+          <div class="post-title">Using AI Prompts to Build Websites That Don't Look AI-Made</div>
+          <div class="post-meta">March 29, 2026 &nbsp;·&nbsp; Web Design &amp; MotionSites.ai</div>
+        </div>
+      </div>
+      <span class="post-arrow">→</span>
+    </a>
+
+    <!-- Days 3–12 — coming soon -->
+    <div class="post-card soon">
+      <div class="post-left">
+        <div class="day-badge">Day<br/>03</div>
+        <div class="post-info">
+          <div class="post-title">Coming Soon</div>
+          <div class="post-meta">Topic TBA</div>
+        </div>
+      </div>
+      <span class="soon-tag">Soon</span>
+    </div>
+
+    <div class="post-card soon">
+      <div class="post-left">
+        <div class="day-badge">Day<br/>04</div>
+        <div class="post-info">
+          <div class="post-title">Coming Soon</div>
+          <div class="post-meta">Topic TBA</div>
+        </div>
+      </div>
+      <span class="soon-tag">Soon</span>
+    </div>
+
+    <div class="post-card soon">
+      <div class="post-left">
+        <div class="day-badge">Day<br/>05</div>
+        <div class="post-info">
+          <div class="post-title">Coming Soon</div>
+          <div class="post-meta">Topic TBA</div>
+        </div>
+      </div>
+      <span class="soon-tag">Soon</span>
+    </div>
+
+    <div class="post-card soon">
+      <div class="post-left">
+        <div class="day-badge">Day<br/>06</div>
+        <div class="post-info">
+          <div class="post-title">Coming Soon</div>
+          <div class="post-meta">Topic TBA</div>
+        </div>
+      </div>
+      <span class="soon-tag">Soon</span>
+    </div>
+
+    <div class="post-card soon">
+      <div class="post-left">
+        <div class="day-badge">Day<br/>07</div>
+        <div class="post-info">
+          <div class="post-title">Coming Soon</div>
+          <div class="post-meta">Topic TBA</div>
+        </div>
+      </div>
+      <span class="soon-tag">Soon</span>
+    </div>
+
+    <div class="post-card soon">
+      <div class="post-left">
+        <div class="day-badge">Day<br/>08</div>
+        <div class="post-info">
+          <div class="post-title">Coming Soon</div>
+          <div class="post-meta">Topic TBA</div>
+        </div>
+      </div>
+      <span class="soon-tag">Soon</span>
+    </div>
+
+    <div class="post-card soon">
+      <div class="post-left">
+        <div class="day-badge">Day<br/>09</div>
+        <div class="post-info">
+          <div class="post-title">Coming Soon</div>
+          <div class="post-meta">Topic TBA</div>
+        </div>
+      </div>
+      <span class="soon-tag">Soon</span>
+    </div>
+
+    <div class="post-card soon">
+      <div class="post-left">
+        <div class="day-badge">Day<br/>10</div>
+        <div class="post-info">
+          <div class="post-title">Coming Soon</div>
+          <div class="post-meta">Topic TBA</div>
+        </div>
+      </div>
+      <span class="soon-tag">Soon</span>
+    </div>
+
+    <div class="post-card soon">
+      <div class="post-left">
+        <div class="day-badge">Day<br/>11</div>
+        <div class="post-info">
+          <div class="post-title">Coming Soon</div>
+          <div class="post-meta">Topic TBA</div>
+        </div>
+      </div>
+      <span class="soon-tag">Soon</span>
+    </div>
+
+    <div class="post-card soon">
+      <div class="post-left">
+        <div class="day-badge">Day<br/>12</div>
+        <div class="post-info">
+          <div class="post-title">Coming Soon</div>
+          <div class="post-meta">Topic TBA</div>
+        </div>
+      </div>
+      <span class="soon-tag">Soon</span>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  AI Learning Blog &nbsp;·&nbsp; Hatchery 2026
+</footer>
+
+</body>
+</html>
